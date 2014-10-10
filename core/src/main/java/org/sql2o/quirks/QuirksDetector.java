@@ -2,6 +2,7 @@ package org.sql2o.quirks;
 
 import org.sql2o.GenericDatasource;
 
+import java.util.Iterator;
 import java.util.ServiceLoader;
 
 /**
@@ -14,9 +15,12 @@ public class QuirksDetector{
 
     public static Quirks forURL(String jdbcUrl) {
         Quirks quirks;
-        for (QuirksProvider provider : providers) {
-            quirks=provider.forURL(jdbcUrl);
+        Iterator<QuirksProvider> itr = providers.iterator();
+        while (itr.hasNext()) {
+            QuirksProvider next =  itr.next();
+            quirks=next.forURL(jdbcUrl);
             if(quirks!=null) return quirks;
+
         }
         return new NoQuirks();
     }
